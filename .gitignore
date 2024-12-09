@@ -1,0 +1,43 @@
+# System Files
+NTUSER.*
+ntuser.*
+Thumbs.db
+desktop.ini
+
+# User Directories
+AppData/
+Contacts/
+Downloads/
+Favorites/
+Links/
+Music/
+OneDrive/
+Pictures/
+Saved Games/
+Searches/
+Videos/
+
+# Eclipse & IDE Files
+.eclipse/
+.idea/
+.vscode/
+eclipse-workspace/
+
+# Programming and Tool Artifacts
+node_modules/
+.angular-config.json
+.gradle/
+.m2/
+.p2/
+.librarymanager/
+.dotnet/
+package-lock.json
+package.json
+
+# Miscellaneous
+AndroidStudioProjects/
+PycharmProjects/
+3D Objects/
+OrganizationSystem/
+.cache/
+.config/
