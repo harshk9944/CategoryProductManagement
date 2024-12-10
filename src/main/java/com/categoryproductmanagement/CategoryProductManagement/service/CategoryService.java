@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.categoryproductmanagement.CategoryProductManagement.entity.Category;
 import com.categoryproductmanagement.CategoryProductManagement.repository.CatRepo;
@@ -22,37 +24,39 @@ public class CategoryService {
 
         return repository.findAll(pageable);
 	}
-	  public String createCategory(Category category) {
+	  public ResponseEntity createCategory(Category category) {
 	       Category c= repository.save(category); 
-	       String msg="Data added successfully";
+	       
 	       if(Objects.isNull(c)) {
-	    	   msg="Data is not added";
-	    	   return msg;
+		       return new ResponseEntity<>("Category not created",HttpStatus.NOT_FOUND);
+ 
 	       }
-	       return msg;
+	       return new ResponseEntity<>(HttpStatus.OK);
 	    }
 	  public Category getCategoryById(long id) {
 	  Optional<Category> categoryOptional = repository.findById(id);  // findById instead of getById
 	    return categoryOptional.orElse(null);
 	}
 	  
-	public Category updateCategory(long id, Category c) {
+	public ResponseEntity<Category> updateCategory(long id, Category c) {
 		 Optional<Category> existingcategoryOptional=repository.findById(id);
 		 if(existingcategoryOptional!=null) {
 			 Category existingCategory=existingcategoryOptional.get();
 			 existingCategory.setName(c.getName());
 			 existingCategory.setDescription(c.getDescription());
-			 return repository.save(existingCategory);
+			  repository.save(existingCategory);
+			  return new ResponseEntity<Category>(HttpStatus.OK);
 		 }
-		return null;
+		return new ResponseEntity<Category>(HttpStatus.NOT_FOUND);
 	}
-	public String deleteById(long id) {
+	public ResponseEntity<Category> deleteById(long id) {
 		// TODO Auto-generated method stub
+		
 		Optional<Category> c=repository.findById(id);
 		if(c.isEmpty()==false) {
-		   repository.deleteById(id);
-		   return "Deleted";
+			repository.deleteById(id);
+		   return new ResponseEntity<Category>(HttpStatus.OK);
 		}
-		return "Enter the correct Id";
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 }

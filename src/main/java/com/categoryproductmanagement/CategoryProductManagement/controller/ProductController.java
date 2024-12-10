@@ -27,7 +27,7 @@ public class ProductController {
 	private ProductService service;
 	
 	@GetMapping
-    public Page<Product> getPaginatedProducts(@RequestParam(defaultValue ="0") int page){
+    public ResponseEntity<Page<Product>> getPaginatedProducts(@RequestParam(defaultValue ="0") int page){
 		int size=10;
 		return service.getPaginatedProducts(page,size);
 	}
@@ -43,20 +43,20 @@ public class ProductController {
 	    }
 	 
 	 @GetMapping("{id}")
-	 public Optional<Product> getProductById(@PathVariable long id) {
-		 Optional <Product> p=service.getProductById(id);
+	 public ResponseEntity<Optional<Product>> getProductById(@PathVariable long id) {
+		 ResponseEntity<Optional<Product>> p=service.getProductById(id);
 		 return p;
 	 }
 	 
 	 @PutMapping("{id}")
-	 public String updateProduct(@PathVariable long id,@RequestBody Product p) {
-		 String msg=service.updateProduct(id,p);
+	 public ResponseEntity updateProduct(@PathVariable long id,@RequestBody Product p) {
+		 ResponseEntity msg=service.updateProduct(id,p);
 		 return msg;
 	 }
 	 
 	 @DeleteMapping("{id}")
-	 public String deleteProduct(@PathVariable long id) {
-		 String msg=service.deleteProduct(id);
+	 public ResponseEntity deleteProduct(@PathVariable long id) {
+		 ResponseEntity msg=service.deleteProduct(id);
 		 return msg;
 	 }
 }

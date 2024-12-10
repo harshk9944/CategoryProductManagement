@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.categoryproductmanagement.CategoryProductManagement.entity.Category;
@@ -22,9 +25,12 @@ public class ProductService {
 	@Autowired
 	CatRepo repository1;
 
-	public Page<Product> getPaginatedProducts(int page, int size) {
+	public ResponseEntity<Page<Product>> getPaginatedProducts(int page, int size) {
         Pageable pageable=PageRequest.of(page, size);
-        return repository.findAll(pageable);
+        if(pageable!=null) {
+        return new ResponseEntity<>(repository.findAll(pageable),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	public void saveProduct(Product product) {
@@ -40,17 +46,17 @@ public class ProductService {
 	        repository.save(product); // Save the product
 	}
 
-	public Optional<Product> getProductById(long id) {
+	public ResponseEntity<Optional<Product>> getProductById(long id) {
 		Optional<Product> p=repository.findById(id);
-		
-		return p;
+		if(p!=null) {
+			return new ResponseEntity<>(p,HttpStatus.OK);
+		}
+		return new ResponseEntity<Optional<Product>>(HttpStatus.NOT_FOUND);
 	}
 
-	public String updateProduct(long id, Product p) {
+	public ResponseEntity<Product> updateProduct(long id, Product p) {
 		Long categoryId=p.getCategory().getId();
-		if(!repository1.existsById(categoryId)) {
-		return "give the correct categoryId";
-		}
+		
 		Optional<Product> existingProductOptional =repository.findById(id);
 
 		if(existingProductOptional!=null) {
@@ -60,20 +66,20 @@ public class ProductService {
 		p1.setDescription(p.getDescription());
 		p1.setCategory(p.getCategory());
 		repository.save(p1);
-		return "Product is updated Successfully";
+		return new ResponseEntity<Product>(HttpStatus.OK);
 		}
-		return "Product is not updated";
+		return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
 		
 	}
 
-	public String deleteProduct(long id) {
+	public ResponseEntity deleteProduct(long id) {
 
      Optional<Product> p=repository.findById(id);
      System.out.println(p);
      if(p.isEmpty()==false) {
     	 repository.deleteById(id);
-    	 return "Deleted";
+    	 return new ResponseEntity("Deleted",HttpStatus.OK);
      }
-     return "Enter the correct Id";
+     return new ResponseEntity("Enter the correct Id",HttpStatus.NOT_FOUND);
 	}
 }

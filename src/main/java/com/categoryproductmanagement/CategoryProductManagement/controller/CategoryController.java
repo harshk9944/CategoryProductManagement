@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,15 +28,15 @@ public class CategoryController {
 	private CategoryService service;
 	
 	@GetMapping
-	public Page<Category> getPaginatedCategories(@RequestParam(defaultValue = "0") int page) {
+	public ResponseEntity<Page<Category>> getPaginatedCategories(@RequestParam(defaultValue = "0") int page) {
 		int size = 10; // Fixed size
-	    return service.getPaginatedCategories(page, size);
+	    return new ResponseEntity<>(service.getPaginatedCategories(page, size),HttpStatus.OK);
 	}
 	
 	 @PostMapping
-	    public String createCategory(@RequestBody Category category) {
-	        String msg = service.createCategory(category);
-	        return msg;
+	    public ResponseEntity createCategory(@RequestBody Category category) {
+	        ResponseEntity response = service.createCategory(category);
+	        return response;
 	    }
 	 
 	 @GetMapping("{id}")
@@ -50,18 +51,14 @@ public class CategoryController {
 	 }
 	 
 	 @PutMapping("{id}")
-	 public String updateCategory(@PathVariable long id,@RequestBody Category c) {
-		 Category cat=service.updateCategory(id,c);
-		 
-		 if(Objects.isNull(cat)) {
-			 return "Data is not updated";
-		 }
-		 return "Data is updated";
+	 public ResponseEntity<Category> updateCategory(@PathVariable long id,@RequestBody Category c) {
+		 ResponseEntity<Category> response=service.updateCategory(id,c);
+		 return response;
 	 }
 	 
 	 @DeleteMapping("{id}")
-	 public String deleteById(@PathVariable long id) {
-		 String msg =service.deleteById(id);
-		 return msg;
+	 public ResponseEntity<Category> deleteById(@PathVariable long id) {
+		 ResponseEntity<Category> response =service.deleteById(id);
+		 return response;
 	 }
 }
